@@ -19,7 +19,7 @@ export const web = await TanStackStart("web", {
 	},
 })
 
-const serverWorker = await Worker("server", {
+const server = await Worker("server", {
 	cwd: "apps/server",
 	name: `${app.name}-${app.stage}`,
 	entrypoint: "src/index.ts",
@@ -36,10 +36,10 @@ const serverWorker = await Worker("server", {
 })
 
 await WranglerJson("wrangler", {
-	worker: serverWorker,
+	worker: server,
 })
 
 console.log(`Web    -> ${web.url}`)
-console.log(`Server -> ${serverWorker.url}`)
+console.log(`Server -> ${server.url}`)
 
 await app.finalize()
