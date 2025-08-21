@@ -9,8 +9,8 @@ config({ path: "./apps/server/.env" })
 const app = await alchemy("alch-ts-hono")
 
 export const web = await TanStackStart("web", {
-	cwd: "apps/web",
 	name: `${app.name}-${app.stage}-web`,
+	entrypoint: "./apps/web/index.ts",
 	bindings: {
 		VITE_SERVER_URL: process.env.VITE_SERVER_URL || "",
 	},
@@ -20,9 +20,8 @@ export const web = await TanStackStart("web", {
 })
 
 const server = await Worker("server", {
-	cwd: "apps/server",
-	name: `${app.name}-${app.stage}`,
-	entrypoint: "src/index.ts",
+	name: `${app.name}-${app.stage}-server`,
+	entrypoint: "./apps/server/index.ts",
 	compatibility: "node",
 	bindings: {
 		DATABASE_URL: alchemy.secret(process.env.DATABASE_URL),
