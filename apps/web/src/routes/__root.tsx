@@ -1,24 +1,23 @@
-import { Toaster } from "@/components/ui/sonner";
+import type { QueryClient } from "@tanstack/react-query"
 
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 
 import {
+	createRootRouteWithContext,
 	HeadContent,
 	Outlet,
 	Scripts,
-	createRootRouteWithContext,
 	useRouterState,
-} from "@tanstack/react-router";
-import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
-import Header from "../components/header";
-import appCss from "../index.css?url";
-import type { QueryClient } from "@tanstack/react-query";
-import Loader from "@/components/loader";
-
-import type { orpc } from "@/utils/orpc";
+} from "@tanstack/react-router"
+import { TanStackRouterDevtools } from "@tanstack/react-router-devtools"
+import Loader from "@/components/loader"
+import { Toaster } from "@/components/ui/sonner"
+import type { orpc } from "@/utils/orpc"
+import Header from "../components/header"
+import appCss from "../index.css?url"
 export interface RouterAppContext {
-	orpc: typeof orpc;
-	queryClient: QueryClient;
+	orpc: typeof orpc
+	queryClient: QueryClient
 }
 
 export const Route = createRootRouteWithContext<RouterAppContext>()({
@@ -44,10 +43,10 @@ export const Route = createRootRouteWithContext<RouterAppContext>()({
 	}),
 
 	component: RootDocument,
-});
+})
 
 function RootDocument() {
-	const isFetching = useRouterState({ select: (s) => s.isLoading });
+	const isFetching = useRouterState({ select: (s) => s.isLoading })
 
 	return (
 		<html lang="en" className="dark">
@@ -65,5 +64,5 @@ function RootDocument() {
 				<Scripts />
 			</body>
 		</html>
-	);
+	)
 }

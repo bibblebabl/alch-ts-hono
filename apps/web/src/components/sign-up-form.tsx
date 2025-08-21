@@ -1,22 +1,22 @@
-import { authClient } from "@/lib/auth-client";
-import { useForm } from "@tanstack/react-form";
-import { useNavigate } from "@tanstack/react-router";
-import { toast } from "sonner";
-import z from "zod";
-import Loader from "./loader";
-import { Button } from "./ui/button";
-import { Input } from "./ui/input";
-import { Label } from "./ui/label";
+import { useForm } from "@tanstack/react-form"
+import { useNavigate } from "@tanstack/react-router"
+import { toast } from "sonner"
+import z from "zod"
+import { authClient } from "@/lib/auth-client"
+import Loader from "./loader"
+import { Button } from "./ui/button"
+import { Input } from "./ui/input"
+import { Label } from "./ui/label"
 
 export default function SignUpForm({
 	onSwitchToSignIn,
 }: {
-	onSwitchToSignIn: () => void;
+	onSwitchToSignIn: () => void
 }) {
 	const navigate = useNavigate({
 		from: "/",
-	});
-	const { isPending } = authClient.useSession();
+	})
+	const { isPending } = authClient.useSession()
 
 	const form = useForm({
 		defaultValues: {
@@ -35,14 +35,14 @@ export default function SignUpForm({
 					onSuccess: () => {
 						navigate({
 							to: "/dashboard",
-						});
-						toast.success("Sign up successful");
+						})
+						toast.success("Sign up successful")
 					},
 					onError: (error) => {
-						toast.error(error.error.message || error.error.statusText);
+						toast.error(error.error.message || error.error.statusText)
 					},
 				},
-			);
+			)
 		},
 		validators: {
 			onSubmit: z.object({
@@ -51,21 +51,21 @@ export default function SignUpForm({
 				password: z.string().min(8, "Password must be at least 8 characters"),
 			}),
 		},
-	});
+	})
 
 	if (isPending) {
-		return <Loader />;
+		return <Loader />
 	}
 
 	return (
-		<div className="mx-auto w-full mt-10 max-w-md p-6">
-			<h1 className="mb-6 text-center text-3xl font-bold">Create Account</h1>
+		<div className="mx-auto mt-10 w-full max-w-md p-6">
+			<h1 className="mb-6 text-center font-bold text-3xl">Create Account</h1>
 
 			<form
 				onSubmit={(e) => {
-					e.preventDefault();
-					e.stopPropagation();
-					form.handleSubmit();
+					e.preventDefault()
+					e.stopPropagation()
+					form.handleSubmit()
 				}}
 				className="space-y-4"
 			>
@@ -160,5 +160,5 @@ export default function SignUpForm({
 				</Button>
 			</div>
 		</div>
-	);
+	)
 }

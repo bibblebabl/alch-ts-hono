@@ -1,13 +1,12 @@
-import alchemy from "alchemy";
-import { TanStackStart } from "alchemy/cloudflare";
-import { Worker, WranglerJson } from "alchemy/cloudflare";
-import { config } from "dotenv";
+import alchemy from "alchemy"
+import { TanStackStart, Worker, WranglerJson } from "alchemy/cloudflare"
+import { config } from "dotenv"
 
-config({ path: "./.env" });
-config({ path: "./apps/web/.env" });
-config({ path: "./apps/server/.env" });
+config({ path: "./.env" })
+config({ path: "./apps/web/.env" })
+config({ path: "./apps/server/.env" })
 
-const app = await alchemy("alch-ts-hono");
+const app = await alchemy("alch-ts-hono")
 
 export const web = await TanStackStart("web", {
 	cwd: "apps/web",
@@ -18,7 +17,7 @@ export const web = await TanStackStart("web", {
 	dev: {
 		command: "bun run dev",
 	},
-});
+})
 
 export const server = await Worker("server", {
 	cwd: "apps/server",
@@ -34,13 +33,13 @@ export const server = await Worker("server", {
 	dev: {
 		port: 3000,
 	},
-});
+})
 
 await WranglerJson("wrangler", {
 	worker: server,
-});
+})
 
-console.log(`Web    -> ${web.url}`);
-console.log(`Server -> ${server.url}`);
+console.log(`Web    -> ${web.url}`)
+console.log(`Server -> ${server.url}`)
 
-await app.finalize();
+await app.finalize()
