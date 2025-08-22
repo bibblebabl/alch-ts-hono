@@ -1,12 +1,15 @@
 import alchemy from "alchemy"
 import { TanStackStart, Worker, WranglerJson } from "alchemy/cloudflare"
+import { CloudflareStateStore } from "alchemy/state"
 import { config } from "dotenv"
 
 config({ path: "./.env" })
 config({ path: "./apps/web/.env" })
 config({ path: "./apps/server/.env" })
 
-const app = await alchemy("alch-ts-hono")
+const app = await alchemy("alch-ts-hono", {
+	stateStore: (scope) => new CloudflareStateStore(scope)
+})
 
 export const web = await TanStackStart("web", {
 	name: `${app.name}-${app.stage}-web`,
