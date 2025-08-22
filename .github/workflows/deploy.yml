@@ -6,11 +6,21 @@ on:
   pull_request:
     types: [opened, synchronize, reopened, closed]
 
+concurrency:
+  group: "deploy-${{ github.ref }}"
+  cancel-in-progress: false
+
+env:
+  STAGE: ${{ github.ref == 'refs/heads/main' && 'prod' || format('pr-{0}', github.event.number) }}
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
     if: github.event.action != 'closed'
     environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'preview' }}
+    permissions:
+      contents: read
+      pull-requests: write
     
     steps:
       - name: Checkout code
@@ -25,7 +35,7 @@ jobs:
         run: bun install --frozen-lockfile
         
       - name: Deploy with Alchemy
-        run: bun run deploy
+        run: bun alchemy deploy --stage ${{ env.STAGE }}
         env:
           ALCHEMY_PASSWORD: ${{ secrets.ALCHEMY_PASSWORD }}
           ALCHEMY_STATE_TOKEN: ${{ secrets.ALCHEMY_STATE_TOKEN }}
@@ -33,13 +43,14 @@ jobs:
           CLOUDFLARE_EMAIL: ${{ secrets.CLOUDFLARE_EMAIL }}
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
-          BETTER_AUTH_URL: ${{ secrets.BETTER_AUTH_URL }}
           PULL_REQUEST: ${{ github.event.number }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   cleanup:
     runs-on: ubuntu-latest
     if: github.event.action == 'closed'
+    permissions:
+      contents: read
     
     steps:
       - name: Checkout code
@@ -54,7 +65,7 @@ jobs:
         run: bun install --frozen-lockfile
         
       - name: Cleanup preview environment
-        run: bun run destroy
+        run: bun alchemy destroy --stage ${{ env.STAGE }}
         env:
           ALCHEMY_PASSWORD: ${{ secrets.ALCHEMY_PASSWORD }}
           ALCHEMY_STATE_TOKEN: ${{ secrets.ALCHEMY_STATE_TOKEN }}
@@ -62,5 +73,4 @@ jobs:
           CLOUDFLARE_EMAIL: ${{ secrets.CLOUDFLARE_EMAIL }}
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
-          BETTER_AUTH_URL: ${{ secrets.BETTER_AUTH_URL }}
           PULL_REQUEST: ${{ github.event.number }}

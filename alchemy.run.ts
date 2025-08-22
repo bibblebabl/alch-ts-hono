@@ -20,7 +20,7 @@ export const web = await TanStackStart("web", {
 	name: `${app.name}-${app.stage}-web`,
 	cwd: "./apps/web",
 	bindings: {
-		VITE_SERVER_URL: `${app.name}-${app.stage}-server.${process.env.CLOUDFLARE_SUBDOMAIN || "your-subdomain"}.workers.dev`,
+		VITE_SERVER_URL: `https://${app.name}-${app.stage}-server.belogurovigor.workers.dev`,
 	},
 	dev: {
 		command: "bun run dev:web",
