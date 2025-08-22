@@ -31,8 +31,9 @@ export const web = await TanStackStart("web", {
 })
 
 export const serverWorker = await Worker("server", {
+	cwd: "./apps/server",
 	name: `${app.name}-${app.stage}-server`,
-	entrypoint: "./apps/server/index.ts",
+	entrypoint: "./src/index.ts",
 	compatibility: "node",
 	bindings: {
 		DATABASE_URL: alchemy.secret(process.env.DATABASE_URL),
