@@ -18,13 +18,11 @@ const app = await alchemy("alch-ts-hono", {
 
 export const web = await TanStackStart("web", {
 	name: `${app.name}-${app.stage}-web`,
-	entrypoint: "./apps/web/.output/server/index.mjs",
-	assetsPath: "./apps/web/.output/public",
 	bindings: {
 		VITE_SERVER_URL: process.env.VITE_SERVER_URL || "",
 	},
 	dev: {
-		command: "bun run dev",
+		command: "bun run dev:web",
 	},
 	build: {
 		command: "bun run build --filter=web"
