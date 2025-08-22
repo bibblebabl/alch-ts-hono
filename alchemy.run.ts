@@ -25,6 +25,9 @@ export const web = await TanStackStart("web", {
 	dev: {
 		command: "bun run dev",
 	},
+	build: {
+		command: "bun run build --filter=web"
+	},
 })
 
 export const serverWorker = await Worker("server", {
