@@ -11,7 +11,9 @@ if (!process.env.CI && !process.env.GITHUB_ACTIONS) {
 }
 
 const app = await alchemy("alch-ts-hono", {
-	stateStore: (scope) => new CloudflareStateStore(scope)
+	stateStore: (scope) => new CloudflareStateStore(scope, {
+		forceUpdate: true
+	})
 })
 
 export const web = await TanStackStart("web", {
