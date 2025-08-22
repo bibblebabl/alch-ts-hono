@@ -18,6 +18,7 @@ const app = await alchemy("alch-ts-hono", {
 
 export const web = await TanStackStart("web", {
 	name: `${app.name}-${app.stage}-web`,
+	cwd: "./apps/web",
 	bindings: {
 		VITE_SERVER_URL: process.env.VITE_SERVER_URL || "",
 	},
@@ -25,7 +26,7 @@ export const web = await TanStackStart("web", {
 		command: "bun run dev:web",
 	},
 	build: {
-		command: "bun run build --filter=web"
+		command: "bun run build"
 	},
 })
 
