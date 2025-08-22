@@ -16,6 +16,7 @@ const app = await alchemy("alch-ts-hono", {
 	})
 })
 
+
 export const web = await TanStackStart("web", {
 	name: `${app.name}-${app.stage}-web`,
 	cwd: "./apps/web",
@@ -40,9 +41,9 @@ export const serverWorker = await Worker("server", {
 	entrypoint: "./src/index.ts",
 	compatibility: "node",
 	bindings: {
-		DATABASE_URL: alchemy.secret(process.env.DATABASE_URL || "postgresql://placeholder"),
+		DATABASE_URL: alchemy.secret(process.env.DATABASE_URL),
 		CORS_ORIGIN: web.url,
-		BETTER_AUTH_SECRET: alchemy.secret(process.env.BETTER_AUTH_SECRET || "dev-secret-change-in-production"),
+		BETTER_AUTH_SECRET: alchemy.secret(process.env.BETTER_AUTH_SECRET),
 		BETTER_AUTH_URL: web.url,
 	},
 	dev: {
