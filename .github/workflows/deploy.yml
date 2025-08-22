@@ -24,7 +24,7 @@ jobs:
         run: bun install --frozen-lockfile
         
       - name: Deploy with Alchemy
-        run: bun deploy
+        run: bun run deploy
         env:
           ALCHEMY_PASSWORD: ${{ secrets.ALCHEMY_PASSWORD }}
           ALCHEMY_STATE_TOKEN: ${{ secrets.ALCHEMY_STATE_TOKEN }}
@@ -50,7 +50,7 @@ jobs:
         run: bun install --frozen-lockfile
         
       - name: Cleanup preview environment
-        run: bun destroy
+        run: bun run destroy
         env:
           ALCHEMY_PASSWORD: ${{ secrets.ALCHEMY_PASSWORD }}
           ALCHEMY_STATE_TOKEN: ${{ secrets.ALCHEMY_STATE_TOKEN }}
