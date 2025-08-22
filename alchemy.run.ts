@@ -1,5 +1,6 @@
 import alchemy from "alchemy"
 import { TanStackStart, Worker, WranglerJson } from "alchemy/cloudflare"
+import { GitHubComment } from "alchemy/github"
 import { CloudflareStateStore } from "alchemy/state"
 import { config } from "dotenv"
 
@@ -57,5 +58,25 @@ await WranglerJson("wrangler", {
 
 console.log(`Web    -> ${web.url}`)
 console.log(`Server -> ${serverWorker.url}`)
+
+// Post comment to GitHub PR with preview URLs
+if (process.env.PULL_REQUEST) {
+	await GitHubComment("pr-comment", {
+		owner: "belogurovigor",
+		repository: "alch-ts-hono",
+		issueNumber: Number(process.env.PULL_REQUEST),
+		body: `## 🚀 Deployment Preview Ready!
+
+Your deployment preview has been successfully deployed:
+
+**🌐 Frontend:** ${web.url}
+**⚡ Backend API:** ${serverWorker.url}
+
+This preview was built from commit \`${process.env.GITHUB_SHA || 'unknown'}\`
+
+---
+<sub>🤖 This comment will be updated automatically when you push new commits to this PR.</sub>`
+	})
+}
 
 await app.finalize()
