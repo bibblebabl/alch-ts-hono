@@ -10,6 +10,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     if: github.event.action != 'closed'
+    environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'preview' }}
     
     steps:
       - name: Checkout code
