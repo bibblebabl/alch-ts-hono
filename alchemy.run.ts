@@ -62,7 +62,7 @@ console.log(`Server -> ${serverWorker.url}`)
 // Post comment to GitHub PR with preview URLs
 if (process.env.PULL_REQUEST) {
 	await GitHubComment("pr-comment", {
-		owner: "belogurovigor",
+		owner: "bibblebabl",
 		repository: "alch-ts-hono",
 		issueNumber: Number(process.env.PULL_REQUEST),
 		body: `## 🚀 Deployment Preview Ready!
