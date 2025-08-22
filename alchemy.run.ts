@@ -3,9 +3,12 @@ import { TanStackStart, Worker, WranglerJson } from "alchemy/cloudflare"
 import { CloudflareStateStore } from "alchemy/state"
 import { config } from "dotenv"
 
-config({ path: "./.env" })
-config({ path: "./apps/web/.env" })
-config({ path: "./apps/server/.env" })
+// Load .env files only in local development, not in CI
+if (!process.env.CI && !process.env.GITHUB_ACTIONS) {
+	config({ path: "./.env" })
+	config({ path: "./apps/web/.env" })
+	config({ path: "./apps/server/.env" })
+}
 
 const app = await alchemy("alch-ts-hono", {
 	stateStore: (scope) => new CloudflareStateStore(scope)
