@@ -20,7 +20,7 @@ export const web = await TanStackStart("web", {
 	name: `${app.name}-${app.stage}-web`,
 	cwd: "./apps/web",
 	bindings: {
-		VITE_SERVER_URL: process.env.VITE_SERVER_URL || "",
+		VITE_SERVER_URL: `${app.name}-${app.stage}-server.${process.env.CLOUDFLARE_SUBDOMAIN || "your-subdomain"}.workers.dev`,
 	},
 	dev: {
 		command: "bun run dev:web",
@@ -36,10 +36,10 @@ export const serverWorker = await Worker("server", {
 	entrypoint: "./src/index.ts",
 	compatibility: "node",
 	bindings: {
-		DATABASE_URL: alchemy.secret(process.env.DATABASE_URL),
-		CORS_ORIGIN: process.env.CORS_ORIGIN || "",
-		BETTER_AUTH_SECRET: alchemy.secret(process.env.BETTER_AUTH_SECRET),
-		BETTER_AUTH_URL: process.env.BETTER_AUTH_URL || "",
+		DATABASE_URL: alchemy.secret(process.env.DATABASE_URL || "postgresql://placeholder"),
+		CORS_ORIGIN: web.url,
+		BETTER_AUTH_SECRET: alchemy.secret(process.env.BETTER_AUTH_SECRET || "dev-secret-change-in-production"),
+		BETTER_AUTH_URL: web.url,
 	},
 	dev: {
 		port: 3000,
