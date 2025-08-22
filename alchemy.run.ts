@@ -30,6 +30,10 @@ export const web = await TanStackStart("web", {
 	},
 })
 
+if (!web.url) {
+	throw new Error("Web URL is not defined")
+}
+
 export const serverWorker = await Worker("server", {
 	cwd: "./apps/server",
 	name: `${app.name}-${app.stage}-server`,
