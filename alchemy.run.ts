@@ -11,7 +11,16 @@ if (!process.env.CI && !process.env.GITHUB_ACTIONS) {
 	config({ path: "./apps/server/.env" })
 }
 
-const app = await alchemy("alch-ts-hono", {
+const githubConfig = {
+	owner: "bibblebabl",
+	repository: "alch-ts-hono",
+} as const
+
+const cloudflareConfig = {
+	owner: "belogurovigor",
+} as const
+
+const app = await alchemy(githubConfig.repository, {
 	stateStore: (scope) => new CloudflareStateStore(scope, {
 		forceUpdate: true
 	})
@@ -22,7 +31,7 @@ export const web = await TanStackStart("web", {
 	name: `${app.name}-${app.stage}-web`,
 	cwd: "./apps/web",
 	bindings: {
-		VITE_SERVER_URL: `https://${app.name}-${app.stage}-server.belogurovigor.workers.dev`,
+		VITE_SERVER_URL: `https://${app.name}-${app.stage}-server.${cloudflareConfig.owner}.workers.dev`,
 	},
 	dev: {
 		command: "bun run dev:web",
@@ -62,8 +71,8 @@ console.log(`Server -> ${serverWorker.url}`)
 // Post comment to GitHub PR with preview URLs
 if (process.env.PULL_REQUEST) {
 	await GitHubComment("pr-comment", {
-		owner: "bibblebabl",
-		repository: "alch-ts-hono",
+		owner: githubConfig.owner,
+		repository: githubConfig.repository,
 		issueNumber: Number(process.env.PULL_REQUEST),
 		body: `## 🚀 Deployment Preview Ready!
 
