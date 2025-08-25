@@ -30,6 +30,7 @@ const app = await alchemy(githubConfig.repository, {
 export const web = await TanStackStart("web", {
 	name: `${app.name}-${app.stage}-web`,
 	cwd: "./apps/web",
+	version: app.stage === "prod" ? undefined : app.stage,
 	bindings: {
 		VITE_SERVER_URL: `https://${app.name}-${app.stage}-server.${cloudflareConfig.owner}.workers.dev`,
 	},
