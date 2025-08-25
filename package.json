@@ -25,7 +25,7 @@
 	"devDependencies": {
 		"turbo": "^2.5.4",
 		"@biomejs/biome": "^2.2.0",
-		"alchemy": "^0.62.1",
+		"alchemy": "0.62.3",
 		"dotenv": "^17.2.1"
 	},
 	"packageManager": "bun@1.2.5"
