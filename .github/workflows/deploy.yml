@@ -11,7 +11,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  STAGE: ${{ github.ref == 'refs/heads/main' && '' || format('pr-{0}', github.event.number) }}
+  STAGE: ${{ github.ref == 'refs/heads/main' && '' || (github.event.number && format('pr-{0}', github.event.number) || '') }}
 
 jobs:
   deploy:
