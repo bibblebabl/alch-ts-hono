@@ -11,13 +11,13 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  STAGE: ${{ github.ref == 'refs/heads/main' && 'prod' || format('pr-{0}', github.event.number) }}
+  STAGE: ${{ github.ref == 'refs/heads/main' && 'prod' || (github.event.number && format('pr-{0}', github.event.number) || '') }}
 
 jobs:
   deploy:
-    # only deploy for open PRs
-    if: ${{ github.event.action != 'closed' }}
     runs-on: ubuntu-latest
+    if: github.event.action != 'closed'
+    environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'preview' }}
     permissions:
       contents: read
       pull-requests: write
