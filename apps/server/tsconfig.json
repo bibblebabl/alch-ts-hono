@@ -1,4 +1,6 @@
 {
+	"include": ["src/**/*", "env.d.ts"],
+	"exclude": ["../../alchemy.run.ts"],
 	"compilerOptions": {
 		"target": "ESNext",
 		"module": "ESNext",
@@ -11,7 +13,7 @@
 			"@/*": ["./src/*"]
 		},
 		"outDir": "./dist",
-		"types": ["node"],
+		"types": ["node", "@cloudflare/workers-types"],
 		"composite": true,
 		"jsx": "react-jsx",
 		"jsxImportSource": "hono/jsx"
