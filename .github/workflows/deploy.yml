@@ -4,37 +4,33 @@ on:
   push:
     branches: [main]
   pull_request:
-    types: [opened, synchronize, reopened, closed]
+    types: [opened, reopened, synchronize, closed]
 
 concurrency:
   group: "deploy-${{ github.ref }}"
   cancel-in-progress: false
 
 env:
-  STAGE: ${{ github.ref == 'refs/heads/main' && 'prod' || (github.event.number && format('pr-{0}', github.event.number) || '') }}
+  STAGE: ${{ github.ref == 'refs/heads/main' && 'prod' || format('pr-{0}', github.event.number) }}
 
 jobs:
   deploy:
+    # only deploy for open PRs
+    if: ${{ github.event.action != 'closed' }}
     runs-on: ubuntu-latest
-    if: github.event.action != 'closed'
-    environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'preview' }}
     permissions:
       contents: read
       pull-requests: write
-    
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        
+      - uses: actions/checkout@v4
+
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: 1.2.5
-          
+
       - name: Install dependencies
-        run: bun install --frozen-lockfile
-        
-      - name: Deploy with Alchemy
+        run: bun install
+
+      - name: Deploy
         run: bun alchemy deploy --stage ${{ env.STAGE }}
         env:
           ALCHEMY_PASSWORD: ${{ secrets.ALCHEMY_PASSWORD }}
@@ -48,30 +44,26 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   cleanup:
+    # cleanup when the PR is closed
     runs-on: ubuntu-latest
-    if: github.event.action == 'closed'
+    if: ${{ github.event.action == 'closed' && github.ref != 'refs/heads/main' }}
     permissions:
+      id-token: write
       contents: read
-    
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        
+      - uses: actions/checkout@v4
+
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: 1.2.5
-          
+
       - name: Install dependencies
-        run: bun install --frozen-lockfile
-        
-      - name: Cleanup preview environment
+        run: bun install
+
+      - name: Destroy Preview Environment
         run: bun alchemy destroy --stage ${{ env.STAGE }}
         env:
           ALCHEMY_PASSWORD: ${{ secrets.ALCHEMY_PASSWORD }}
           ALCHEMY_STATE_TOKEN: ${{ secrets.ALCHEMY_STATE_TOKEN }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_EMAIL: ${{ secrets.CLOUDFLARE_EMAIL }}
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
           PULL_REQUEST: ${{ github.event.number }}
