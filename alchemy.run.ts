@@ -30,7 +30,6 @@ const app = await alchemy(githubConfig.repository, {
 export const web = await TanStackStart("web", {
 	name: `${app.name}-${app.stage}-web`,
 	cwd: "./apps/web",
-	version: app.stage === "prod" ? undefined : app.stage,
 	bindings: {
 		VITE_SERVER_URL: `https://${app.name}-${app.stage}-server.${cloudflareConfig.owner}.workers.dev`,
 	},
@@ -85,7 +84,9 @@ Your deployment preview has been successfully deployed:
 This preview was built from commit \`${process.env.GITHUB_SHA || 'unknown'}\`
 
 ---
-<sub>🤖 This comment will be updated automatically when you push new commits to this PR.</sub>`
+<sub>🤖 This comment will be updated automatically when you push new commits to this PR.</sub>
+<sub>Last updated: ${new Date().toUTCString()}</sub>
+`
 	})
 }
 
