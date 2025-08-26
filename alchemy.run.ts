@@ -85,7 +85,9 @@ Your deployment preview has been successfully deployed:
 This preview was built from commit \`${process.env.GITHUB_SHA || 'unknown'}\`
 
 ---
-<sub>🤖 This comment will be updated automatically when you push new commits to this PR.</sub>`
+<sub>🤖 This comment will be updated automatically when you push new commits to this PR.</sub>
+<sub>Last updated: ${new Date().toUTCString()}</sub>
+`
 	})
 }
 
